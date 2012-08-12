@@ -1,6 +1,12 @@
 Iniciando com o exercicio
 =========================
 
+A Shell git-push pode ser invocada assim:
+    
+    ./git-push  "acertando o readme "
+
+permitindo fazer um Add/Commit/Push numa única "tacada".
+   
 
 imperative_bad_scenario.feature
 ===============================
@@ -57,6 +63,6 @@ declarative_steps.rb
       page.body.should =~ regexp
     end
     
-            
+
 
 
