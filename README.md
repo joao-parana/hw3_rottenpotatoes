@@ -29,31 +29,34 @@ imperative_bad_scenario.feature
 declarative_good_scenario.feature
 =================================
 
-Feature: movies when added should appear in movie list
-
-Scenario: view movie list after adding movie (imperative and non-DRY)
-
-  Given I have added "Zorro" with rating "PG-13"
-  And   I have added "Apocalypse Now" with rating "R"
-  Then  I should see "Apocalypse Now" before "Zorro" on the Rotten Potatoes home page
-
-
+    Feature: movies when added should appear in movie list
+    
+    Scenario: view movie list after adding movie (imperative and non-DRY)
+    
+      Given I have added "Zorro" with rating "PG-13"
+      And   I have added "Apocalypse Now" with rating "R"
+      Then  I should see "Apocalypse Now" before "Zorro" on the Rotten Potatoes home page
+    
+    
 
 
 declarative_steps.rb
 ====================
 
-Given /I have added "(.*)" with rating "(.*)"/ do |title, rating|
-  Given %Q{I am on the Create New Movie page}
-  When  %Q{I fill in "Title" with "#{title}"}
-  And   %Q{I select "#{rating}" from "Rating"}
-  And   %Q{I press "Save Changes"}
-end
-
-Then /I should see "(.*)" before "(.*)" on (.*)/ do |string1, string2, path|
-  Given %Q{I am on #{path}}
-  regexp = /#{string1}.*#{string2}/m #  /m means match across newlines
-  page.body.should =~ regexp
-end
+    Given /I have added "(.*)" with rating "(.*)"/ do |title, rating|
+      Given %Q{I am on the Create New Movie page}
+      When  %Q{I fill in "Title" with "#{title}"}
+      And   %Q{I select "#{rating}" from "Rating"}
+      And   %Q{I press "Save Changes"}
+    end
+        
+        
+    Then /I should see "(.*)" before "(.*)" on (.*)/ do |string1, string2, path|
+      Given %Q{I am on #{path}}
+      regexp = /#{string1}.*#{string2}/m #  /m means match across newlines
+      page.body.should =~ regexp
+    end
+    
+            
 
 
