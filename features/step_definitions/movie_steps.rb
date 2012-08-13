@@ -4,8 +4,9 @@ Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
     # each returned element will be a hash whose key is the table header.
     # you should arrange to add that movie to the database here.
+    my_movie = Movie.create!(movie)
   end
-  flunk "Unimplemented"
+  # flunk "Unimplemented"
 end
 
 # Make sure that one string (regexp) occurs before or after another one
@@ -28,7 +29,53 @@ end
 #  "When I check the following ratings: G"
 
 When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
+  list = rating_list.split(',')
+  list.each do |rating|
+    input_name = ('ratings[' + rating.strip + ']')
+    if uncheck 
+       step 'I uncheck "' + input_name + '"'
+     else
+       step 'I check "' + input_name + '"'
+     end
+  end
+ 
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
+end
+
+And /^uncheck all other checkboxes than (.*)/ do |rating_list|
+  list = rating_list.split(',')
+  list.each do |rating|
+    input_name = ('ratings[' + rating.strip + ']')
+    step 'I uncheck "' + input_name + '"'
+  end
+end
+
+And /^submit the "([^"]*)" on the homepage/ do |form_id|
+  if "ratings_form" == form_id
+    step 'I press "Refresh"'
+  else
+    flunk "esperando 'ratings_form', veio " + form_id
+  end
+end
+
+And /^I should see "([^"]*)" and "([^"]*)" ratings movies on page$/ do |rating1, rating2|
+  step 'I should see ' + rating1 + ', ' + rating2 + ' ratings movies'
+end
+
+And /^I should see (.*) ratings movies$/ do |rating_list|
+  list = rating_list.split(',')
+  list.each do |rating|
+    step 'I should see "' + rating + '"'
+  end 
+end
+
+And /^other movies with ratings (.*) are not visible$/ do |rating_list|
+  list = rating_list.split(',')
+  list.each do |rating|
+    # flunk 'I should not see "' + rating.strip + '"'
+    step 'I should not see "<td>' + rating.strip + '<td>"'
+  end
+  
 end
