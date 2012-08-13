@@ -31,8 +31,15 @@ Scenario: restrict to movies with 'PG' or 'R' ratings
   And I should see "PG" and "R" ratings movies on page
   And other movies with ratings G, PG-13 are not visible
 
-Scenario: no ratings selected
-  # see assignment
+Scenario: no ratings selected 
+  When I uncheck all checkboxes : G, R, PG, PG-13
+  And submit the "ratings_form" on the homepage
+  Then I should be on the RottenPotatoes home page
+  And I should not see movies with ratings G, R, PG, PG-13
 
 Scenario: all ratings selected
-  # see assignment
+  Given I am on the RottenPotatoes home page 
+  When I check all checkboxes : G, R, PG, PG-13
+  And submit the "ratings_form" on the homepage
+  Then I should be on the RottenPotatoes home page
+  And I should see movies with ratings G, R, PG, PG-13

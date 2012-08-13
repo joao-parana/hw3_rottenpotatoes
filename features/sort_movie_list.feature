@@ -20,12 +20,14 @@ Background: movies have been added to database
   | Chicken Run             | G      | 21-Jun-2000  |
 
   And I am on the RottenPotatoes home page
+  Then I need check the following ratings: PG, R, G, PG-13 and press "Refresh"
 
 Scenario: sort movies alphabetically
-  When I follow "Movie Title"
-  # your steps here
+  When I follow "Movie Title"  
+  Then I should see "1992-11-25 00:00:00 UTC" before "2001-04-25 00:00:00 UTC"
+
 
 Scenario: sort movies in increasing order of release date
   When I follow "Release Date"
-  # your steps here
+  Then I should see "Aladdin" before "Amelie"
 

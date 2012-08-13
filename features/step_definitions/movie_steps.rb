@@ -14,14 +14,19 @@ end
 
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
   #  ensure that that e1 occurs before e2.
-  # i1 = page.content.index(e1)
-  # i2 = page.content.index(e2)
-  # assert page.content.include? e1
-  # assert page.content.include? e2
-  # assert i1 < i2
+  page_str = page.html
+  # flunk e1 + ', ' + e2 + ' ==> ' + page_str 
+  # flunk("MY_LOG  #{msg}")
+  # log.info(page.inspect)
+  i1 = page_str.index(e1)
+  i2 = page_str.index(e2)
+  assert (page_str.include? e1)
+  assert (page_str.include? e2)
+  assert i1 < i2
   assert e1 < e2
-  #  page.content  is the entire content of the page as a string.
+  #  page.html  is the entire content of the page as a string.
   # flunk "Unimplemented"
+  # flunk e1 + ', ' + e2 + ' ==> ' + page_str 
 end
 
 # Make it easier to express checking or unchecking several boxes at once
@@ -44,11 +49,24 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
 end
 
-And /^uncheck all other checkboxes than (.*)/ do |rating_list|
+And /^(un)?check all other checkboxes than (.*)/ do |uncheck, rating_list|
   list = rating_list.split(',')
   list.each do |rating|
     input_name = ('ratings[' + rating.strip + ']')
-    step 'I uncheck "' + input_name + '"'
+    if uncheck
+      step 'I uncheck "' + input_name + '"'
+    else
+      step 'I check "' + input_name + '"'
+    end
+    
+  end
+end
+
+When /^I (un)?check all checkboxes : (.*)/ do |uncheck, rating_list|
+  if uncheck
+      step 'uncheck all other checkboxes than ' + rating_list
+    else
+      step 'check all other checkboxes than ' + rating_list 
   end
 end
 
@@ -75,7 +93,44 @@ And /^other movies with ratings (.*) are not visible$/ do |rating_list|
   list = rating_list.split(',')
   list.each do |rating|
     # flunk 'I should not see "' + rating.strip + '"'
-    step 'I should not see "<td>' + rating.strip + '<td>"'
+    step 'I should not see "<td>' + rating.strip + '<td>"'  
   end
-  
+end
+
+And /^other movies with ratings (.*) are visible$/ do |rating_list|
+  # flunk 'is_not=' + is_not
+  list = rating_list.split(',')
+  list.each do |rating|
+    # flunk 'I should see "' + rating.strip + '"'
+    step 'I should see "<td>' + rating.strip + '<td>"' 
+  end
+end
+
+And /^I should not see movies with ratings (.*)$/  do |rating_list|
+  step 'other movies with ratings ' + rating_list + ' are not visible'
+end
+
+Then /^I need check the following ratings: (.*) and press "Refresh"$/ do |rating_list| 
+  list = rating_list.split(',')
+  list.each do |rating|
+    input_name = ('ratings[' + rating.strip + ']')
+    step 'I check "' + input_name + '"'
+  end
+  step 'I press "Refresh"'
+  # flunk ' rating_list = ' + rating_list.inspect
+end
+
+Then /^I should see movies with ratings (.*)$/ do |rating_list|
+  # flunk 'other movies with ratings ' + rating_list + ' are visible'
+  # step 'other movies with ratings ' + rating_list + ' are visible'
+  page_str = page.html
+  list = rating_list.split(',')
+  assert list.length > 0
+  # flunk list.inspect -> ["G", " R", " PG", " PG-13"]
+  list.each do |rating|
+    msg = '<td>' + rating.strip + '</td>'
+    # flunk 'I should see ' + msg  -> I should see "<td>G</td>"
+    # step 'I should see ' + msg
+    assert page.html.index(msg) > 0
+  end
 end
